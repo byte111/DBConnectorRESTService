@@ -9,11 +9,15 @@ import java.util.HashMap;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
 
+import com.webproj.constants.DBConnectorConstants;
+import com.webproj.reports.exception.UserProfileInsertException;
 import com.webproj.reports.helper.XMLReaderHelper;
 import com.webproj.reports.vo.BillingMO;
 import com.webproj.reports.vo.IPreparedStatementSetterObj;
+import com.webproj.reports.vo.UserProfile;
 
 
 public class DBConnectionDAO {
@@ -72,18 +76,29 @@ public class DBConnectionDAO {
 	}
 
 
+	/**
+	 * @throws Exception
+	 */
 	private  void getJDBCTemplate() throws Exception
 	{
 		try 
 		{		
 			jdbcTemplate = new JdbcTemplate(getDataSource());
+			
 		} 
 		catch (Exception e) 
 		{
 			throw new Exception("Excveption in creating jdbc template : "+e);
 		}		
 	}
-
+	
+	public static void removeInstance()
+	{
+		if(daoObj != null)
+		{
+			daoObj = null;
+		}			
+	}
 
 	public int insertBillEvent(final BillingMO billingMO,final String AGENT) throws Exception
 	{
@@ -114,7 +129,7 @@ public class DBConnectionDAO {
 	public boolean validateLogin(final String username, final String password) throws SQLException, Exception
 	{
 		ResultSet  result = null;
-		String sqlSelect = "SELECT * from  usercreds where username = ? and password = ?";
+		String sqlSelect = "SELECT * FROM  USERCREDS WHERE USERNAME = ? AND PASSWORD = ?";
 		try
 		{
 			 result = jdbcTemplate.execute(sqlSelect, new PreparedStatementCallback<ResultSet>() {
@@ -174,6 +189,95 @@ public class DBConnectionDAO {
 		
 		
 	}
+	
+	public UserProfile getUserProfileDets(String compid)
+	{
+		
+		UserProfile userprof = null;
+		try {
+			
+			String query = DBConnectorConstants.USERPROFGETQUERYBYUSERID;
+			userprof = jdbcTemplate.queryForObject(query, new Object[]{compid}, new RowMapper<UserProfile>(){
 
+				@Override
+				public UserProfile mapRow(ResultSet rs, int rowNum) throws SQLException {
+					UserProfile userprof = new UserProfile();
+					userprof.setCompid(rs.getString("COMPID"));
+					userprof.setCompname(rs.getString("COMPNAME"));
+					userprof.setAddress(rs.getString("ADDRESS"));
+					userprof.setRetention(rs.getInt("RETENTION"));
+					return userprof;
+				}});
+			
+			
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+		return userprof;
+	}
+	
+	public UserProfile insertUserProfile(UserProfile userprofile)
+	{
+		UserProfile userprofileget = null;
+		try 
+		{
+			String query = DBConnectorConstants.USERPROFINSERTQUERY;
+			
+			int rows = jdbcTemplate.update(query, new Object[]{
+					userprofile.getCompid(),
+					userprofile.getCompname(),
+					userprofile.getAddress(),
+					userprofile.getRetention()					
+			});
+			
+			if(checkIfCreateProfileSuccess(rows))
+			{
+				
+				userprofileget = jdbcTemplate.queryForObject(DBConnectorConstants.USERPROFGETQUERYBYUSERID, 
+															new Object[]{userprofile.getCompid()}, 
+															new RowMapper<UserProfile>(){
+
+																@Override
+																public UserProfile mapRow(ResultSet rs, int rowNum)
+																		throws SQLException  {
+																	UserProfile userprof = new UserProfile();
+																	userprof.setCompid(rs.getString("COMPID"));
+																	userprof.setCompname(rs.getString("COMPNAME"));
+																	userprof.setAddress(rs.getString("ADDRESS"));
+																	userprof.setRetention(rs.getInt("RETENTION"));
+																	return userprof;
+																	
+																}});
+				return userprofileget;
+			}
+			
+		}
+		
+		catch(UserProfileInsertException e)
+		{
+			System.out.println("User profile not created for the following values : " +userprofile.toString());
+			e.printStackTrace();
+			
+		}
+		catch (Exception e) {
+			e.printStackTrace();
+		}
+		return userprofileget;
+		
+		
+	}
+	
+	private boolean checkIfCreateProfileSuccess(int rows) throws UserProfileInsertException
+	{
+		if(rows > 0)
+			return true;
+		else
+			throw new UserProfileInsertException("User profile not created.");
+	}
+
+	public static void main(String[] args) {
+	System.out.println(DBConnectionDAO.getInstance().insertUserProfile(new UserProfile("DEVASHISH", "DEV11", "BLR", 100)));
+	}
 
 }

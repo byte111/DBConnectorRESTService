@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>com.webprojreports</groupId>
-	<artifactId>webprojreports</artifactId>
+	<artifactId>DBConnector</artifactId>
 	<version>1.0.0.0</version>
 	<packaging>war</packaging>
 
@@ -21,9 +21,84 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<java.version>1.7</java.version>
 		<start-class>com.webproj.reports.service.BillService</start-class>
+		<version.jersey>2.15</version.jersey>
 	</properties>
 
 	<dependencies>
+		
+		
+		<!--  <dependency>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
+            </dependency>
+      
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jettison</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+      
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
+            </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-processing</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-multipart</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-sse</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+       
+        <dependency>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-client</artifactId>
+            <version>${version.jersey}</version>
+        </dependency>
+       
+		 -->
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-core-asl -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-core-asl</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-mapper-asl -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-mapper-asl</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-xc -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-xc</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+		
+		<!-- https://mvnrepository.com/artifact/org.codehaus.jackson/jackson-jaxrs -->
+		<dependency>
+		    <groupId>org.codehaus.jackson</groupId>
+		    <artifactId>jackson-jaxrs</artifactId>
+		    <version>1.9.2</version>
+		</dependency>
+				
+		
+		<dependency>
+		    <groupId>com.sun.jersey</groupId>
+		    <artifactId>jersey-json</artifactId>
+		    <version>1.8</version>
+		</dependency>
+		
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter</artifactId>
@@ -56,8 +131,27 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-web</artifactId>
 		</dependency>
-	</dependencies>
+		<!-- https://mvnrepository.com/artifact/com.sun.xml.bind/jaxb-impl -->
+		
 
+		<dependency>
+			<groupId>javax.xml</groupId>
+			<artifactId>jaxb-api</artifactId>
+			<version>2.1</version>
+		</dependency>
+		
+		<dependency>
+		    <groupId>com.sun.jersey</groupId>
+		    <artifactId>jersey-client</artifactId>
+		    <version>1.19.1</version>
+		</dependency>
+
+		<dependency>
+			<groupId>org.springframework.social</groupId>
+			<artifactId>spring-social-core</artifactId>
+		</dependency>
+	</dependencies>
+	
 	<build>
 		<plugins>
 			<plugin>

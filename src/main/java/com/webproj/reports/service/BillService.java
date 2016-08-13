@@ -119,6 +119,11 @@ public class BillService {
 			System.out.println("Exception in inserting billing event.");		
 			e.printStackTrace();
 		}
+		
+		finally
+		{
+			DBConnectionDAO.removeInstance();
+		}
 		if(res > 0 )
 		{
 		return Response.status(200).entity("true").build();
