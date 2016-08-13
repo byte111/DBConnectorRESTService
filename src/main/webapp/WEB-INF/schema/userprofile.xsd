@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<xsd:schema	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
+		xmlns="http://localhost:8041/DBConnector/rest/user/profile"
+		targetNamespace="http://localhost:8041/DBConnector/rest/user/profile"
+		elementFormDefault="qualified" attributeFormDefault="unqualified">
+		
+
+	<xsd:element name="userprof">
+		<xsd:complexType>
+			<xsd:sequence>
+				<xsd:element name="userprofile" type="userprofileelement" minOccurs="0" maxOccurs="unbounded" />
+			</xsd:sequence>				
+
+		</xsd:complexType>		
+		
+	</xsd:element>
+	
+	
+	<xsd:complexType name="userprofileelement">
+
+		<xsd:sequence>
+			<xsd:element name="compname" type="xsd:string" minOccurs="0" />
+			<xsd:element name="compid" type="xsd:string" minOccurs="0" />
+			<xsd:element name="address" type="xsd:string" minOccurs="0" />
+			<xsd:element name="retention" type="xsd:integer" minOccurs="0" />
+		</xsd:sequence>
+		
+		
+			
+	</xsd:complexType>
+ </xsd:schema>
