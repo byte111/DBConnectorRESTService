@@ -1,11 +1,18 @@
 package com.webproj.reports.vo;
 
-public class UserProfile {
+import javax.xml.bind.annotation.XmlElement;
+import javax.xml.bind.annotation.XmlRootElement;
 
+@XmlRootElement
+
+public class UserProfile {
 	String compname;
 	String compid;
 	String address;
 	int retention;
+	
+	@XmlElement
+	private UserCredentials usercreds;
 	
 	public UserProfile()
 	{
@@ -20,6 +27,15 @@ public class UserProfile {
 		this.retention = retention ; 
 	}
 	
+	public UserCredentials getUserCreds()
+	{
+		return usercreds;
+	}
+	
+	public void setUsercreds(UserCredentials usercreds)
+	{
+		this.usercreds = usercreds;
+	}
 	
 	public String getCompname() {
 		return compname;
