@@ -1,0 +1,26 @@
+CREATE OR REPLACE PROCEDURE getDBUSERBycompid(
+	   i_compid IN userprofile.compid%TYPE,
+	   o_compname OUT userprofile.compname%TYPE,
+	   o_address OUT  userprofile.address%TYPE )
+IS
+BEGIN
+
+  SELECT compname , address
+  INTO o_compname, o_address
+  from  userprofile WHERE compid  = i_compid;
+
+END;
+/
+
+
+
+DECLARE
+  compid VARCHAR2(100) := 'dev';
+  o_compname varchar2(100);
+  o_address varchar2(100);
+BEGIN
+  getDBUSERBycompid(compid,o_compname,o_address);
+  DBMS_OUTPUT.PUT_LINE(o_compname);
+   DBMS_OUTPUT.PUT_LINE(o_address);
+END;
+/

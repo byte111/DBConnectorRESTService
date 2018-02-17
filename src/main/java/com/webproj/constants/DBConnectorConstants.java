@@ -20,5 +20,12 @@ public class DBConnectorConstants {
 	
 	public static final String TARDPARTINSERTQUERY="INSERT INTO TRADINGPARTNERS(PARTNERSHIPID,OWNERCOMPID,PARTNERCOMPID,CHARGES,CREATED,MODIFIED) VALUES(?,?,?,?,?,?)";
 	public static final String TARDPARTSELECTQUERY=	"SELECT * FROM TRADINGPARTNERS WHERE OWNERCOMPID=?";
+	
+	/************************************** NAMED PARAMS *****************************************/
+	
+	public static final String USERCREDGETQUERYBYUSERID_NAMED="SELECT * FROM USERPROFILE WHERE COMPID= :COMPID";
+
+	
+	
 
 }

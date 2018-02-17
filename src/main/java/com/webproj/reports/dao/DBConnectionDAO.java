@@ -1,66 +1,98 @@
 package com.webproj.reports.dao;
 
+/*
+ * 
+ * This class uses jdbcTemplate
+ * 
+ * 
+ */
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.dbcp.BasicDataSource;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.context.support.FileSystemXmlApplicationContext;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.PreparedStatementCallback;
 import org.springframework.jdbc.core.PreparedStatementCreator;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.datasource.SimpleDriverDataSource;
-import org.springframework.jdbc.support.KeyHolder;
-
 import com.webproj.constants.DBConnectorConstants;
+import com.webproj.reports.beans.HelloBean;
+import com.webproj.reports.exception.CustomSQLErrorCodesTranslator;
 import com.webproj.reports.exception.TradingPrtnerException;
 import com.webproj.reports.exception.UserProfileInsertException;
 import com.webproj.reports.helper.Utility;
-import com.webproj.reports.helper.XMLReaderHelper;
 import com.webproj.reports.jaxb.Partners;
-import com.webproj.reports.jaxb.Tradpartners;
 import com.webproj.reports.jaxb.UserProfileDetails;
-import com.webproj.reports.service.TradingPartnerService;
 import com.webproj.reports.vo.BillingMO;
-import com.webproj.reports.vo.IPreparedStatementSetterObj;
 import com.webproj.reports.vo.UserCredentials;
 import com.webproj.reports.vo.UserProfile;
 
 
 public class DBConnectionDAO {
-
-	private static JdbcTemplate jdbcTemplate= null;
+	
+	
+	HelloBean obj;
+	
+	/*public void setHelloBO(HelloBean helloBO)
+	{
+		
+		this.helloBO = helloBO;
+	}
+*/
+	private  JdbcTemplate jdbcTemplate= null;
 	private static DBConnectionDAO daoObj = null;
 	private DBConnectionDAO()
 	{
+		System.out.println("helloBO ================================================ " + obj);
 		try {
 			jdbcTemplate = getJdbcTemplateInstance();
+			//jdbcTemplate.setExceptionTranslator(getCustomExceptionExeption());
 		} catch (Exception e) {
 
 			e.printStackTrace();
 		}
 	}
+	
+	private CustomSQLErrorCodesTranslator getCustomExceptionExeption()
+	{
+		return new CustomSQLErrorCodesTranslator();
+	}
 
-	private  SimpleDriverDataSource getDataSource() throws Exception{
-
-		SimpleDriverDataSource datasource = new SimpleDriverDataSource();
-		try {			
-			datasource.setDriver(new oracle.jdbc.driver.OracleDriver());
+	private  BasicDataSource getDataSource() throws Exception{
+		
+		try {	
+		BasicDataSource datasource = new BasicDataSource();
+		
+		//ApplicationContext context =  		new ClassPathXmlApplicationContext("../applicationContext.xml");
+		
+		ApplicationContext context = new FileSystemXmlApplicationContext("C:\\devwrkspc\\pwd\\sts_wrspc\\myworkspc\\DBConnector\\src\\main\\webapp\\WEB-INF\\applicationContext.xml");
+		
+		datasource =  (BasicDataSource) context.getBean("dataSource");
+		
+				
+		
+			/*datasource.setDriver(new oracle.jdbc.driver.OracleDriver());
 			datasource.setUrl("jdbc:oracle:thin:@localhost:1521:xe");
 			datasource.setUsername("SYSTEM");
-			datasource.setPassword("dev");
+			datasource.setPassword("dev");*/
+		return datasource;
 		} catch (Exception e) {
 			e.printStackTrace();
 			throw new Exception("Exception in getting datasource");
 		}
 
-		return datasource;
+		
 	}
 
 	public static DBConnectionDAO getInstance()
@@ -208,7 +240,8 @@ public class DBConnectionDAO {
 		final String query  = DBConnectorConstants.USERPROFGETALLQUERY;
 
 		List<Map<String, Object>> userproflist = new  ArrayList<Map<String, Object>>();
-
+			
+		
 		try
 		{
 			userproflist = jdbcTemplate.queryForList(query, new Object[]{startindex + size , startindex});
@@ -268,6 +301,35 @@ public class DBConnectionDAO {
 		return userprof;
 	}
 
+	
+	public UserProfileDetails getUserProfileDets1(String compid) throws Exception
+	{
+
+		UserProfileDetails userprof = null;
+		try {
+
+			String query = DBConnectorConstants.USERPROFGETQUERYBYUSERID;
+			userprof = jdbcTemplate.queryForObject(query, new Object[]{compid}, new RowMapper<UserProfileDetails>(){
+
+				@Override
+				public UserProfileDetails mapRow(ResultSet rs, int rowNum) throws SQLException {
+					UserProfileDetails userprof = new UserProfileDetails();
+					userprof.setCompid(rs.getString("COMPID"));
+					userprof.setCompname(rs.getString("COMPNAME"));
+					userprof.setAddress(rs.getString("ADDRESS"));
+					userprof.setRetention(rs.getInt("RETENTION"));
+					return userprof;
+				}});
+
+
+		} catch (Exception e) 
+		{
+			e.printStackTrace();
+			throw new Exception("Error in getting user profile : " + e.getMessage());
+		}
+
+		return userprof;
+	}
 
 	// need not pass tag parameter. this is just to overload method
 	public UserProfileDetails getUserProfileDets(String compid,String tag) throws Exception

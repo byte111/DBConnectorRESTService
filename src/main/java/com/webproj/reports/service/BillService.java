@@ -20,23 +20,31 @@ import javax.xml.parsers.ParserConfigurationException;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.ApplicationTemp;
-
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.SAXException;
 
+import com.webproj.reports.beans.HelloBean;
 import com.webproj.reports.beans.IHelloBO;
 import com.webproj.reports.dao.DBConnectionDAO;
+import com.webproj.reports.dao.DBConnectionDAO1;
+import com.webproj.reports.dao.DBConnectionDAO2;
+import com.webproj.reports.dao.DBConnectionDAO3;
+import com.webproj.reports.exception.TradingPrtnerException;
 import com.webproj.reports.helper.XMLReaderHelper;
+import com.webproj.reports.jaxb.Partners;
+import com.webproj.reports.jaxb.UserProfileDetails;
 import com.webproj.reports.vo.BillingMO;
 
 
 @Path("/bill")
 public class BillService {
 
-	@Autowired
-	IHelloBO helloBO;
+	/*@Autowired
+	IHelloBO helloBO;*/
 
 
 	@GET
@@ -44,6 +52,28 @@ public class BillService {
 	@Produces("application/json")
 	public Response testResponse()
 	{	
+		/*ApplicationContext context =
+	    		new ClassPathXmlApplicationContext("../applicationContext.xml");
+		HelloBean helloBean = (HelloBean)context.getBean("helloBO");
+		System.out.println(helloBean.getVal());*/
+		UserProfileDetails userprofdets;
+		try {
+			//userprofdets = DBConnectionDAO2.getInstance().getUserProf("dev");
+			//System.out.println(userprofdets.getAddress());
+			
+			/*Partners partners = new Partners();
+			partners.setPartnershipid(111);
+			
+			DBConnectionDAO2.getInstance().insertTradingPartnership(partners);*/
+			
+			
+			
+			
+		} catch (Exception  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
 		return Response.status(200).entity(" BILL Component is UP!!").build();
 	}
 	
@@ -157,6 +187,25 @@ public class BillService {
 	}
 	
 	
+	
+	@GET
+	@Path("/testproc/{compid}")
+	@Produces("application/json")
+	public Response testResponse3(@PathParam("compid") String compid)
+	{	
+
+		UserProfileDetails userprofdets;
+		try {
+
+			return Response.status(200).entity(DBConnectionDAO3.getInstance().callTestProcedure(compid)).build();
+			
+		} catch (Exception  e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	
+		return null;
+	}
 
 	
 
